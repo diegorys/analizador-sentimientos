@@ -1,14 +1,18 @@
-import numpy as np
-import math
-import re
-import pandas as pd
-from bs4 import BeautifulSoup
-import tensorflow as tf
-from tensorflow.keras import layers
-import tensorflow_datasets as tfds
+# FASE DE IMPORTAR DEPENDENCIAS:
 from dcnn import DCNN
+import tensorflow_datasets as tfds
+from tensorflow.keras import layers
+import tensorflow as tf
+from bs4 import BeautifulSoup
+import pandas as pd
+import re
+import math
+import numpy as np
+print('Importación de dependencias')
 
-# Load data
+# FASE DE CARGA DE DATOS:
+print('Carga de datos')
+
 cols = ["sentiment", "id", "date", "query", "user", "text"]
 train_data = pd.read_csv(
     "data/train.csv",
@@ -30,7 +34,8 @@ test_data = pd.read_csv(
 
 data = train_data
 
-# Limpieza
+# FASE DE LIMPIEZA DE DATOS:
+print('Limpieza de datos')
 
 data.drop(["id", "date", "query", "user"],
           axis=1,
@@ -58,7 +63,9 @@ data_labels[data_labels == 4] = 1
 # print(data_clean)
 # Data clean: obtenemos el corpus limpio.
 
-# Tokenización
+# FASE DE TOKENIZACIÓN:
+print('Tokenización')
+
 tokenizer = tfds.features.text.SubwordTextEncoder.build_from_corpus(
     # 2**16: dos elevado a 16, coge las 65536 palabras más frecuentes.
     data_clean, target_vocab_size=2**16
@@ -75,7 +82,11 @@ data_inputs = tf.keras.preprocessing.sequence.pad_sequences(
     padding="post",
     maxlen=MAX_LEN)
 
-# Dividimos en los conjuntos de entrenamiento y de testing
+# FASE DE CREACIÓN DE CONJUNTOS DE ENTRENAMIENTO Y TEST:
+print('Creación de conjuntos de entrenamiento y test')
+
+# test_idx = np.random.randint(0, 500, 100)
+# test_idx = np.concatenate((test_idx, test_idx+500))
 
 test_idx = np.random.randint(0, 800000, 8000)
 test_idx = np.concatenate((test_idx, test_idx+800000))
@@ -97,6 +108,7 @@ BATCH_SIZE = 32
 NB_EPOCHS = 5
 
 # FASE DE ENTRENAMIENTO:
+print('Entrenamiento')
 
 Dcnn = DCNN(vocab_size=VOCAB_SIZE,
             emb_dim=EMB_DIM,
@@ -136,6 +148,8 @@ Dcnn.fit(train_inputs,
 ckpt_manager.save()
 
 # FASE DE EVALUACIÓN:
+print('Evaluación')
+
 results = Dcnn.evaluate(test_inputs, test_labels, batch_size=BATCH_SIZE)
 print(results)
 
