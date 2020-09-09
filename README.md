@@ -9,3 +9,5 @@ https://www.udemy.com/course/procesamiento-del-lenguaje-natural/
 http://cs.stanford.edu/people/alecmgo/trainingandtestdata.zip
 
 2. Descomprimir el archivo. Encontramos dos ficheros, el de "test" y el de "train". Los metemos en la carpeta "data" del proyecto, y los renombramos a "test.csv" y "train.csv".
+
+## 2. Traductor
